@@ -29,7 +29,7 @@ app.add_middleware(
 
 
 MODEL_PATH = "model/trained_plant_disease_model.keras"
-model = tf.keras.models.load_model(MODEL_PATH)
+# model = tf.keras.models.load_model(MODEL_PATH)
 
 CLASS_NAMES = [
     'Apple___Apple_scab',
