@@ -1,0 +1,8 @@
+__pycache__/
+*.pyc
+
+model/
+uploads/
+users.db
+
+.venv/
