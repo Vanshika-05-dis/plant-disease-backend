@@ -143,6 +143,11 @@ from models import Base
 
 Base.metadata.create_all(bind=engine)
 
+from database import init_db
+
+@app.on_event("startup")
+def startup():
+    init_db()
 
 
 
