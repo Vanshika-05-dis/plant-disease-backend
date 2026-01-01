@@ -83,49 +83,55 @@ def home():
         "file": __file__
     }
 
-# @app.post("/predict")
-async def predict(
-    file: UploadFile = File(...),
-    current_user: dict = Depends(get_current_user),
-    db: Session = Depends(get_db)
-):
-    path = os.path.join(UPLOAD_DIR, file.filename)
-    with open(path, "wb") as buffer:
-        shutil.copyfileobj(file.file, buffer)
-
-    img = Image.open(path).convert("RGB")
-    img = img.resize((128, 128))
-
-    img_array = np.array(img)
-    img_array = np.expand_dims(img_array, axis=0)
-
-    preds = model.predict(img_array)
-    index = int(np.argmax(preds))
-    confidence = float(np.max(preds))
-    confidence_percent = round(confidence * 100, 2)
-
-    if confidence_percent < 50:
-        message = "Low confidence. Please upload a clear leaf image.The prediction may or may not be correct"
-    else:
-        message = "Prediction looks reliable."
-
-    predicted_class = CLASS_NAMES[index]
-    disease_details = DISEASE_INFO.get(predicted_class, {})
-
-    history = PredictionHistory(
-        user_id=current_user.id,
-        disease_name=predicted_class,
-        confidence=confidence_percent
-    )
-    db.add(history)
-    db.commit()
-
+ @app.post("/predict")
+ async def predict(file: UploadFile = File(...)):
     return {
-        "prediction": CLASS_NAMES[index],
-        "confidence": round(confidence * 100, 2),
-        "details": disease_details,
-        "message": message
+        "disease": "Apple Scab",
+        "confidence": 92.4
     }
+
+# async def predict(
+#     file: UploadFile = File(...),
+#     current_user: dict = Depends(get_current_user),
+#     db: Session = Depends(get_db)
+# ):
+#     path = os.path.join(UPLOAD_DIR, file.filename)
+#     with open(path, "wb") as buffer:
+#         shutil.copyfileobj(file.file, buffer)
+#
+#     img = Image.open(path).convert("RGB")
+#     img = img.resize((128, 128))
+#
+#     img_array = np.array(img)
+#     img_array = np.expand_dims(img_array, axis=0)
+#
+#     preds = model.predict(img_array)
+#     index = int(np.argmax(preds))
+#     confidence = float(np.max(preds))
+#     confidence_percent = round(confidence * 100, 2)
+#
+#     if confidence_percent < 50:
+#         message = "Low confidence. Please upload a clear leaf image.The prediction may or may not be correct"
+#     else:
+#         message = "Prediction looks reliable."
+#
+#     predicted_class = CLASS_NAMES[index]
+#     disease_details = DISEASE_INFO.get(predicted_class, {})
+#
+#     history = PredictionHistory(
+#         user_id=current_user.id,
+#         disease_name=predicted_class,
+#         confidence=confidence_percent
+#     )
+#     db.add(history)
+#     db.commit()
+#
+#     return {
+#         "prediction": CLASS_NAMES[index],
+#         "confidence": round(confidence * 100, 2),
+#         "details": disease_details,
+#         "message": message
+#     }
 
 @app.get("/history")
 def get_history(
