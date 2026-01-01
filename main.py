@@ -83,8 +83,8 @@ def home():
         "file": __file__
     }
 
- @app.post("/predict")
- async def predict(file: UploadFile = File(...)):
+@app.post("/predict")
+async def predict(file: UploadFile = File(...)):
     return {
         "disease": "Apple Scab",
         "confidence": 92.4
