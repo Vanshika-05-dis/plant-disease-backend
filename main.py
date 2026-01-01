@@ -21,7 +21,8 @@ app.include_router(auth_router)
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # React URL
+    allow_origins=[ "http://localhost:5173",
+        "https://your-vercel-frontend.vercel.app"],  # React URL
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
